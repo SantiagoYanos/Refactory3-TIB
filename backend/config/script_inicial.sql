@@ -71,3 +71,19 @@ INSERT INTO students_subjects (student_id, subject_id, approved) VALUES
 /*REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'students_user_3'@'localhost';
 DROP USER 'students_user_3'@'localhost';
 DROP DATABASE students_db_3;*/
+
+/* VER LISTA DE CONSTRAINTS EN UNA TABLA
+SELECT *
+FROM information_schema.REFERENTIAL_CONSTRAINTS
+WHERE CONSTRAINT_SCHEMA = 'students_db_3'
+  AND TABLE_NAME = 'mi_tabla';
+  */
+
+/* Quitar las constraints de students_subjetcts */
+ALTER TABLE students_subjects DROP CONSTRAINT students_subjects_ibfk_1;
+ALTER TABLE students_subjects DROP CONSTRAINT students_subjects_ibfk_2;
+
+
+/* Agregar las Foreign Key eliminadas pero sin el DELETE ON CASCADE */
+ALTER TABLE students_subjects ADD FOREIGN KEY (student_id) REFERENCES students(id);
+ALTER TABLE students_subjects ADD FOREIGN KEY (subject_id) REFERENCES subjects(id);
