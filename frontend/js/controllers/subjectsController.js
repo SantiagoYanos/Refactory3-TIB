@@ -106,6 +106,7 @@ async function confirmDeleteSubject(id) {
     await subjectsAPI.remove(id);
     loadSubjects();
   } catch (err) {
+    alert("Error al borrar materia");
     console.error("Error al borrar materia:", err.message);
   }
 }

@@ -123,6 +123,7 @@ async function confirmDelete(id) {
     await studentsAPI.remove(id);
     loadStudents();
   } catch (err) {
+    alert("Error al borrar alumno");
     console.error("Error al borrar:", err.message);
   }
 }

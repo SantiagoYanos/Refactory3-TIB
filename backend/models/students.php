@@ -64,11 +64,16 @@ function updateStudent($conn, $id, $fullname, $email, $age)
 
 function deleteStudent($conn, $id)
 {
-    $sql = "DELETE FROM students WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
+    try {
 
-    //Se retorna fila afectadas para validar en controlador
-    return ['deleted' => $stmt->affected_rows];
+        $sql = "DELETE FROM students WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        //Se retorna fila afectadas para validar en controlador
+        return ['deleted' => $stmt->affected_rows];
+    } catch (mysqli_sql_exception $e) {
+        return ['deleted' => -1];
+    }
 }
