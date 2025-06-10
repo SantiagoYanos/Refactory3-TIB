@@ -1,22 +1,23 @@
 <?php
-/**
-*    File        : backend/models/subjects.php
-*    Project     : CRUD PHP
-*    Author      : Tecnologías Informáticas B - Facultad de Ingeniería - UNMdP
-*    License     : http://www.gnu.org/licenses/gpl.txt  GNU GPL 3.0
-*    Date        : Mayo 2025
-*    Status      : Prototype
-*    Iteration   : 3.0 ( prototype )
-*/
 
-function getAllSubjects($conn) 
+/**
+ *    File        : backend/models/subjects.php
+ *    Project     : CRUD PHP
+ *    Author      : Tecnologías Informáticas B - Facultad de Ingeniería - UNMdP
+ *    License     : http://www.gnu.org/licenses/gpl.txt  GNU GPL 3.0
+ *    Date        : Mayo 2025
+ *    Status      : Prototype
+ *    Iteration   : 3.0 ( prototype )
+ */
+
+function getAllSubjects($conn)
 {
     $sql = "SELECT * FROM subjects";
 
     return $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 }
 
-function getSubjectById($conn, $id) 
+function getSubjectById($conn, $id)
 {
     $sql = "SELECT * FROM subjects WHERE id = ?";
     $stmt = $conn->prepare($sql);
@@ -24,24 +25,32 @@ function getSubjectById($conn, $id)
     $stmt->execute();
     $result = $stmt->get_result();
 
-    return $result->fetch_assoc(); 
+    return $result->fetch_assoc();
 }
 
-function createSubject($conn, $name) 
+function createSubject($conn, $name)
 {
-    $sql = "INSERT INTO subjects (name) VALUES (?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $name);
-    $stmt->execute();
+    try {
 
-    return 
-    [
-        'inserted' => $stmt->affected_rows,        
-        'id' => $conn->insert_id
-    ];
+        $sql = "INSERT INTO subjects (name) VALUES (?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $name);
+        $stmt->execute();
+
+        return
+            [
+                'inserted' => $stmt->affected_rows,
+                'id' => $conn->insert_id
+            ];
+    } catch (mysqli_sql_exception $e) {
+        return
+            [
+                'inserted' => -1,
+            ];
+    }
 }
 
-function updateSubject($conn, $id, $name) 
+function updateSubject($conn, $id, $name)
 {
     $sql = "UPDATE subjects SET name = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
@@ -51,7 +60,7 @@ function updateSubject($conn, $id, $name)
     return ['updated' => $stmt->affected_rows];
 }
 
-function deleteSubject($conn, $id) 
+function deleteSubject($conn, $id)
 {
     $sql = "DELETE FROM subjects WHERE id = ?";
     $stmt = $conn->prepare($sql);
@@ -60,4 +69,3 @@ function deleteSubject($conn, $id)
 
     return ['deleted' => $stmt->affected_rows];
 }
-?>

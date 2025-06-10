@@ -29,20 +29,26 @@ function getStudentById($conn, $id)
     return $result->fetch_assoc();  //fetch_assoc() extrae UNA SOLA fila como array asociativo
 }
 
+
 function createStudent($conn, $fullname, $email, $age)
 {
-    $sql = "INSERT INTO students (fullname, email, age) VALUES (?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssi", $fullname, $email, $age);
-    $stmt->execute();
+    try {
 
-    //Se retorna un arreglo con la cantidad e filas insertadas 
-    //y id insertado para validar en el controlador:
-    return
-        [
-            'inserted' => $stmt->affected_rows,
-            'id' => $conn->insert_id      //Creo que en el estado actual, no utiliza este valor
-        ];
+        $sql = "INSERT INTO students (fullname, email, age) VALUES (?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssi", $fullname, $email, $age);
+        $stmt->execute();
+
+        //Se retorna un arreglo con la cantidad e filas insertadas 
+        //y id insertado para validar en el controlador:
+        return
+            [
+                'inserted' => $stmt->affected_rows,
+                'id' => $conn->insert_id      //Creo que en el estado actual, no utiliza este valor
+            ];
+    } catch (mysqli_sql_exception $e) {
+        echo "Execution failed: " . $e->getMessage();
+    }
 }
 
 function updateStudent($conn, $id, $fullname, $email, $age)
